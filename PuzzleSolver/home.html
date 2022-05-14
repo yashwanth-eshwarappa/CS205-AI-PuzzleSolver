@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<HTML>
+
+<head>
+</head>
+
+<body>
+    <script type="module" src="PuzzleSolver.js"></script>
+
+    <h1 style=" background-color: aqua; text-align: center;">
+        <b>
+            Puzzle Solver
+        </b>
+    </h1>
+    <div id="initialInput">
+        Select the option below::<br>
+        <input type="radio" id="puzzleSelectorDefault" checked name="radioSelectPuzzle">
+        <label>Default Puzzle</label><br>
+        <input type="radio" id="puzzleSelectorCustom" name="radioSelectPuzzle">
+        <label>Custom Puzzle</label><br>
+        <button type="submit" onclick="createPuzzle()">Submit</button>
+        <br>
+    </div>
+
+    <div id="inputCustom" hidden>
+        <textarea id="inputCustomText"></textarea>
+        <button type="submit" onclick="getCustomPuzzle()">Submit</button>
+    </div>
+
+    <div id="algoSelect" hidden>
+        Select the choise of algorithm below::<br>
+        <input type="radio" id="uniform" checked name="radioSelectAlgo">
+        <label>1. Uniform Cost Search</label><br>
+        <input type="radio" id="misplaced" name="radioSelectAlgo">
+        <label>2. A* Misplaced Tile heuristic</label><br>
+        <input type="radio" id="manhattan" name="radioSelectAlgo">
+        <label>3. A* Manhattan Distance heuristic</label><br>
+        <button type="submit" onclick="algoSelectSubmit()">Submit</button>
+        <br>
+    </div>
+
+</body>
+
+</HTML>
