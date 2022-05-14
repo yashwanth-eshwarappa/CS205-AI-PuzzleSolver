@@ -22,7 +22,8 @@ public class PuzzleSolver {
 			}
 			node puzzleMainNode = null;
 			if(enteredValue.equals("1")) {
-				puzzleMainNode = new node(new int[][]{{1, 2, 3},{4, 0, 6},{7, 5, 8}});
+			//	120 453 786 - 2 6 8
+				puzzleMainNode = new node(new int[][]{{1, 2, 0},{4, 5, 3},{7, 8, 6}});
 			}
 			else {
 				System.out.println("Please enter the first row. Provide space/tab after each value");
@@ -98,6 +99,8 @@ class node {
 		
 		Set<node> explored = new HashSet<>();
 		
+		PuzzleSolverUtils pzUtil = new PuzzleSolverUtils();
+		
 		pq.add(this);
 		totalExpanded++; //Parent node count
 		
@@ -145,6 +148,31 @@ class node {
 				if(algoSelected != 1) {
 					return;
 				}
+				else if(algoSelected == 1) {
+					explored.add(currentNode);
+					while(!pq.isEmpty()) {
+						node temp = pq.poll();
+						if(temp.g != currentNode.g) {
+							System.out.println("expanded ==========" + totalExpanded2);
+							return;
+						}
+						
+						node[] neighborNodes = PuzzleSolverUtils.getNodeNeighbors(temp.puzzle);
+						int count = 0;
+						for(node each : neighborNodes){
+							if(each != null) {
+								count++;
+								if(!pzUtil.isExplored(explored, each.puzzle)) {
+									pq.add(each);
+								}
+							}
+						}
+						if(count > 1) {
+							totalExpanded2++;
+						}
+						maxQueue = Math.max(pq.size(), maxQueue);
+					}
+				}
 			}
 			
 			
@@ -177,8 +205,6 @@ class node {
 				if(each != null){
 					count++;
 					each.g = currentNode.g + 1;
-					
-					PuzzleSolverUtils pzUtil = new PuzzleSolverUtils();
 					
 					switch(algoSelected) {
 						case 1: 
