@@ -1,6 +1,4 @@
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
@@ -58,6 +56,10 @@ public class PuzzleSolver {
 			enteredValue = scan.nextLine();
 			while(!(enteredValue.equals("1")|| enteredValue.equals("2") || enteredValue.equals("3"))) {
 				System.out.println("Please select valid option from the above options");
+				enteredValue = scan.nextLine();
+				if(enteredValue.equals("1")|| enteredValue.equals("2") || enteredValue.equals("3")){
+					break;
+				}
 			}
 			if (enteredValue.equals("1")){
 				puzzleMainNode.generic_search(1);
@@ -155,6 +157,7 @@ class node {
 						if(temp.g != currentNode.g) {
 //							System.out.println("expanded ========== " + totalExpanded);
 							System.out.println("Algorithm expanded total nodes = "+ totalExpanded);
+							System.out.println("The maximum nodes in the queue at any time = " + maxQueue);
 							System.out.println("---------------------------------------------------------");
 							return;
 						}
@@ -165,13 +168,15 @@ class node {
 							if(each != null) {
 								count++;
 								if(!pzUtil.isExplored(explored, each.puzzle)) {
-									pq.add(each);
+//									pq.add(each);
+									maxQueue++;
 								}
 							}
 						}
 						if(count > 1) {
 							totalExpanded++;
 						}
+						maxQueue--;
 					}
 				}
 			}
@@ -235,51 +240,6 @@ class node {
 						pq.add(each);
 						explored.add(each);
 					}
-					else {
-						count--;
-					}
-//					pq.add(each);
-					
-					System.out.println("!@#$#$%^$%%^&^* "+count);
-					
-//					boolean isFinalState = true;
-//					
-//					final int[][] finalState = new int[][]{{1, 2, 3},{4, 5, 6},{7, 8, 0}};
-//					for(int i = 0; i < 3; ++i){
-//						for(int j = 0; j < 3; ++j){
-//							if(!(each.puzzle[i][j] == finalState[i][j])){
-//								isFinalState = false;
-//							}
-//						}
-//					}
-//					
-//					System.out.println(isFinalState);
-//					
-//					if(!isFinalState){
-//						for(int i = 0; i < explored.size(); ++i){
-//							if(!explored.contains(each)) {
-//								pq.add(each);
-//							}
-//						}
-//					}
-//					else{
-//						System.out.println("Goal Reached!");
-//						
-//						for(int i = 0; i < 3; ++i){
-//							for(int j = 0; j < 3; ++j){
-//								System.out.print(each.puzzle[i][j] + " ");
-//							}
-//							System.out.print("\n");
-//						}
-//						
-//						System.out.println("---------------------------------------------------------");
-//						System.out.println("Algorithm expanded total nodes = " + totalExpanded  +"@@@@@ "+ totalExpanded2);
-//						System.out.println("The maximum nodes in the queue at any time = " + maxQueue);
-//						System.out.println("The depth of the goal state = " + each.g);
-//						System.out.println("---------------------------------------------------------");
-//						
-//						return;
-//					}
 				}
 			}
 		}
