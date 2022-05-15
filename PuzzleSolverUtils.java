@@ -1,7 +1,8 @@
 import java.util.Set;
 
+// Puzzle Solver utility class
 public class PuzzleSolverUtils {
-	
+	// Get the position of 0 (empty space in real world puzzle)
 	private static int[] getZeroPosition(int[][] currPuzzle){
 		for (int i = 0; i < 3; ++i){
 			for (int j = 0; j < 3; ++j){
@@ -12,7 +13,7 @@ public class PuzzleSolverUtils {
 		}
 		return null;
 	}
-	
+	// Returns the adjacent nodes with puzzles for a requested puzzle
 	public static node[] getNodeNeighbors(int[][] puzzle) {
 
 		int[] positions = getZeroPosition(puzzle);
@@ -82,8 +83,9 @@ public class PuzzleSolverUtils {
 		return neighbors;
 	}
 	
+	// Return misplaced count for Misplaced tiles heuristic
 	int getMisplacedCount(int[][] puzzle){
-		int valueInEachPosition = 1;
+		int valueInEachPosition = 1; // starting with 1 for 1st position in the matrix
 		int misplacedCount = 0;
 		for(int i = 0; i < 3; ++i){
 			for(int j = 0; j < 3; ++j){
@@ -97,6 +99,7 @@ public class PuzzleSolverUtils {
 		return misplacedCount;
 	}
 	
+	// Returns the distance between to given positions in the provided puzzle
 	private int getDistance(int num, int x, int y){
 		int[][] goalState = new int[][]{{1, 2, 3},{4, 5, 6},{7, 8, 0}};
 		for(int i = 0; i < 3; ++i){
@@ -109,6 +112,7 @@ public class PuzzleSolverUtils {
 		return 0;
 	}
 	
+	// Return heuristic distance value which is sum of all distance for values in puzzle
 	public int getManhattanDist(int[][] puzzle){
 		int dist = 0;
 		for(int i = 0; i < 3; ++i){
@@ -121,7 +125,7 @@ public class PuzzleSolverUtils {
 		return dist;
 	}
 
-	
+	// Utility function to check if the given puzzle is already in the explored set
 	public boolean isExplored(Set<node> explored, int[][] testPuzzle) {
 		for(node each:explored) {
 			int counter=0;
