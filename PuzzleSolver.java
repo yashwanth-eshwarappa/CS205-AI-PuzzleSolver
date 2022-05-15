@@ -4,12 +4,12 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class PuzzleSolver {
-	
+	// Puzzle Solver main class
 	public static void main(String[] args){
 		PuzzleSolver ps = new PuzzleSolver();
 		ps.createPuzzle();
 	}
-	
+	// Initial point of the project to create a puzzle or use a default puzzle.
 	public void createPuzzle(){
 		System.out.println("Enter 1 for default puzzle or 2 for entering custom puzzle");
 		try (
@@ -22,12 +22,14 @@ public class PuzzleSolver {
 					break;
 				}
 			}
+			// Parent node with main puzzle to solve
 			node puzzleMainNode = null;
+			
 			if(enteredValue.equals("1")) {
-			//	120 453 786 - 2 6 8
-				puzzleMainNode = new node(new int[][]{{7, 1, 2},{4, 8, 5},{6, 3, 0}});
+			// Default puzzle values
+				puzzleMainNode = new node(new int[][]{{0, 7, 2},{4, 6, 1},{3, 5, 8}});
 			}
-			else {
+			else { // Scan for custom puzzle values
 				System.out.println("Please enter the first row. Provide space/tab after each value");
 				String row1 = scan.nextLine();
 				System.out.println("Please enter the second row. Provide space/tab after each value");
@@ -52,6 +54,7 @@ public class PuzzleSolver {
 				puzzleMainNode = new node(puzzleMatrix);
 			}
 			
+			// Options to select an Algorithm
 			System.out.println("Select the algorithm to solve the puzzle-");
 			System.out.println("1. Uniform Cost Search");
 			System.out.println("2. A* - Misplaced Tile heuristic");
@@ -65,15 +68,10 @@ public class PuzzleSolver {
 					break;
 				}
 			}
-			if (enteredValue.equals("1")){
-				puzzleMainNode.generic_search(1);
-			}
-			else if (enteredValue.equals("2")){
-				puzzleMainNode.generic_search(2);
-			}
-			else if (enteredValue.equals("3")){
-				puzzleMainNode.generic_search(3);
-			}
+			
+			// Passing algorithm selection to the generic search function
+			puzzleMainNode.generic_search(Integer.parseInt(enteredValue));
+
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
@@ -84,9 +82,9 @@ public class PuzzleSolver {
 class node {
 	static int totalExpanded = 0; // Total count of all expanded nodes
 	int [][] puzzle = new int[3][3];
-	int f;
-	int g;
-	int h;
+	int f;	//estimated cost of cheapest solution
+	int g; //cost to get to node 
+	int h; //estimated distance
 	
 	node(int[][] puzzle){
 		this.puzzle = puzzle;
@@ -95,12 +93,13 @@ class node {
 		f = 0;
 	}
 	
+	//Generic Search algorithm
 	void generic_search(int algoSelected){
-		
+		// min heap using priority queue
 		PriorityQueue<node> pq = new PriorityQueue<node>(10, (node a, node b)-> a.f - b.f);
-		
 		Set<node> explored = new HashSet<>();
 		
+		// Utility class instance reference
 		PuzzleSolverUtils pzUtil = new PuzzleSolverUtils();
 		
 		pq.add(this);
@@ -109,13 +108,17 @@ class node {
 		int maxQueue = 0;
 		
 		while(pq.size() != 0){
-
+			
 			maxQueue = Math.max(pq.size(), maxQueue);
 			currentNode = pq.poll();
 			
+			// Flag to check final state
 			boolean isFinalState = true;
 			
+			// Set final state values
 			final int[][] finalState = new int[][]{{1, 2, 3},{4, 5, 6},{7, 8, 0}};
+			
+			// Check if final state is reached
 			for(int i = 0; i < 3; ++i){
 				for(int j = 0; j < 3; ++j){
 					if(!(currentNode.puzzle[i][j] == finalState[i][j])){
@@ -123,9 +126,7 @@ class node {
 					}
 				}
 			}
-			
-			System.out.println(isFinalState);
-			
+			// Final state is reached. Printing the depth, totalExpanded and maximum nodes in queue at any given time.
 			if(isFinalState){
 				System.out.println("Goal Reached!");
 				for(int i = 0; i < 3; ++i){
@@ -137,13 +138,15 @@ class node {
 				
 				System.out.println("---------------------------------------------------------");
 				System.out.println("The depth of the goal state = " + currentNode.g);
+				
+				// If algorithm is Misplaced or Manhattan
 				if(algoSelected != 1) {
 					System.out.println("Algorithm expanded total nodes = "+ totalExpanded);
 					System.out.println("The maximum nodes in the queue at any time = " + maxQueue);
 					System.out.println("---------------------------------------------------------");
 					return;
 				}
-				else if(algoSelected == 1) {
+				else if(algoSelected == 1) { // Handling special cases for Uniform cost search
 					explored.add(currentNode);
 					while(!pq.isEmpty()) {
 						node temp = pq.poll();
@@ -154,6 +157,7 @@ class node {
 							return;
 						}
 						
+						// Get all neighbor nodes
 						node[] neighborNodes = PuzzleSolverUtils.getNodeNeighbors(temp.puzzle);
 						int count = 0;
 						for(node each : neighborNodes){
@@ -172,7 +176,6 @@ class node {
 				}
 			}
 			
-			
 			System.out.println("Optimal state to expand when g(n) = " + currentNode.g  + ", h(n) = " + currentNode.h + " is: ");
 			
 			for(int i = 0; i < 3; ++i){
@@ -181,33 +184,34 @@ class node {
 				}
 				System.out.print("\n");
 			}
-			
+			// Adding node to explored set to avoid duplicates to Queue
 			explored.add(currentNode);
 			
+			// Get all the neighbor nodes for currentNode
 			node[] neighborNodes = PuzzleSolverUtils.getNodeNeighbors(currentNode.puzzle);
 			totalExpanded++;
 			
 			for(node each : neighborNodes){
 				if(each != null){
 					each.g = currentNode.g + 1;
-					
+					// Based on algorithm selection perform cost function
 					switch(algoSelected) {
 						case 1: 
 							each.f = each.g + 0; //since h = 0 for uniform cost
 							break;
 						case 2:
-							each.h = pzUtil.getMisplacedCount(each.puzzle);
+							each.h = pzUtil.getMisplacedCount(each.puzzle); // get the heuristic value for all the misplaced values
 							each.f = each.g + each.h;
 							break;
 						case 3:
-							each.h = pzUtil.getManhattanDist(each.puzzle);
+							each.h = pzUtil.getManhattanDist(each.puzzle); // get the heuristic distance
 							each.f = each.g + each.h;
 							break;
 						default:
 							break;
-						
 					}
 					
+					// If the node puzzle is not already explored, add it to queue
 					if(!pzUtil.isExplored(explored, each.puzzle)) {
 						pq.add(each);
 						explored.add(each);
