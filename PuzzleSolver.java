@@ -26,8 +26,8 @@ public class PuzzleSolver {
 			node puzzleMainNode = null;
 			
 			if(enteredValue.equals("1")) {
-			// Default puzzle values
-				puzzleMainNode = new node(new int[][]{{0, 7, 2},{4, 6, 1},{3, 5, 8}});
+				// Default puzzle values
+				puzzleMainNode = new node(new int[][]{{1, 3, 6},{5, 0, 2},{4, 7, 8}});
 			}
 			else { // Scan for custom puzzle values
 				System.out.println("Please enter the first row. Provide space/tab after each value");
@@ -69,8 +69,18 @@ public class PuzzleSolver {
 				}
 			}
 			
+			// Set clock timer to calculate total time taken by the algorithm
+			long startTiming = System.nanoTime();
+			
 			// Passing algorithm selection to the generic search function
 			puzzleMainNode.generic_search(Integer.parseInt(enteredValue));
+			
+			long endTiming = System.nanoTime();
+
+			long duration = (endTiming - startTiming);
+			
+			System.out.println("Time taken for execution = "+ duration/1000000 +"ms");
+			
 
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
@@ -97,11 +107,12 @@ class node {
 	void generic_search(int algoSelected){
 		// min heap using priority queue
 		PriorityQueue<node> pq = new PriorityQueue<node>(10, (node a, node b)-> a.f - b.f);
-		Set<node> explored = new HashSet<>();
+		Set<node> explored = new HashSet<>(); // save visited puzzle in explored to avoid duplicate search
 		
 		// Utility class instance reference
 		PuzzleSolverUtils pzUtil = new PuzzleSolverUtils();
 		
+		// Adding initial puzzle to the priority queue
 		pq.add(this);
 		
 		node currentNode = this;
@@ -140,7 +151,7 @@ class node {
 				System.out.println("The depth of the goal state = " + currentNode.g);
 				
 				// If algorithm is Misplaced or Manhattan
-				if(algoSelected != 1) {
+				if(algoSelected != 1 || (algoSelected == 1 && pq.isEmpty())) {
 					System.out.println("Algorithm expanded total nodes = "+ totalExpanded);
 					System.out.println("The maximum nodes in the queue at any time = " + maxQueue);
 					System.out.println("---------------------------------------------------------");
