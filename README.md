@@ -3,8 +3,10 @@ The Eight Puzzle
 
 
 # Introduction
+
 This project is for the Introduction to AI course, part of the project assigned by professor Dr.
 Eamonn Keogh during the Spring 2022 quarter at University of California Riverside.
+
 The 8 puzzle is a 3 * 3 grid filled with numbers from 0 to 8. A real-world scenario would have zero
 represent an empty square. A unique number would go in each square. To solve this puzzle,
 one needs to order the numbers in such a way that they ascend from left to right and left to
